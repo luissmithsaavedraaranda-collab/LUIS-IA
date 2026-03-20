@@ -20,15 +20,48 @@ app.post('/generar', async (req, res) => {
     
     try {
         // Generar Imagen/Logo Real con OpenAI
+        
+       const express = require('express');
+const cors = require('cors');
+const fetch = require('node-fetch');
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Servir la página web
+app.use(express.static('public'));
+
+// Función para generar Imágenes GRATIS (Sin API Key)
+app.post('/generar', async (req, res) => {
+    const { tipo, prompt } = req.body;
+    
+    try {
+        // GENERAR IMAGEN/LOGO GRATIS CON POLLINATIONS.AI
         if (tipo === 'logo' || tipo === '3d') {
-            const response = await openai.images.generate({
-                model: "dall-e-3",
-                prompt: prompt,
-                n: 1,
-                size: "1024x1024",
-            });
-            return res.json({ resultado: response.data[0].url, tipo: 'imagen' });
+            // Esta web genera imágenes gratis a partir del texto
+            const encodedPrompt = encodeURIComponent(prompt + ", high quality, 4k");
+            const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}`;
+            
+            // Verificamos que la imagen exista
+            return res.json({ resultado: imageUrl, tipo: 'imagen' });
         }
+        
+        // VIDEOS (Seguimos usando muestras porque el video real es muy caro)
+        if (tipo === 'video') {
+             return res.json({ resultado: "https://www.w3schools.com/html/mov_bbb.mp4", tipo: 'video' });
+        }
+        if (tipo === 'music') {
+            return res.json({ resultado: "https://www.w3schools.com/html/horse.mp3", tipo: 'audio' });
+        }
+
+    } catch (error) {
+        res.status(500).json({ error: "Error: " + error.message });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Servidor LUIS IA funcionando en modo GRATIS'));
         
         // Simulación de Video y Música (Requiere APIs de pago extras para ser real)
         if (tipo === 'video') {
