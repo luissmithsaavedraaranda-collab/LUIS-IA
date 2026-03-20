@@ -1,0 +1,128 @@
+public/index.html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUIS IA - Plataforma de Creación IA</title>
+    <style>
+        :root { --primary: #6c5ce7; --accent: #00cec9; --dark: #1a1a2e; --card: #16213e; --text: #eaeaea; --success: #00b894; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--dark); color: var(--text); }
+        header { background: rgba(26, 26, 46, 0.95); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 1000; border-bottom: 1px solid #333; }
+        .logo { font-size: 1.8rem; font-weight: 900; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; }
+        nav ul { display: flex; list-style: none; gap: 1.5rem; } nav a { color: var(--text); text-decoration: none; }
+        .btn-login { background: transparent; border: 2px solid var(--accent); color: var(--accent); padding: 0.5rem 1.5rem; border-radius: 50px; cursor: pointer; font-weight: bold; }
+        .hero { height: 90vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at center, #2a2a4a 0%, var(--dark) 100%); padding-top: 60px; }
+        .hero h1 { font-size: 4rem; margin-bottom: 1rem; text-shadow: 0 0 20px rgba(108, 92, 231, 0.5); }
+        .hero span { color: var(--accent); }
+        .hero p { font-size: 1.2rem; color: #aaa; max-width: 600px; margin-bottom: 2rem; }
+        .btn-cta { background: var(--primary); color: white; padding: 1rem 3rem; border-radius: 50px; font-size: 1.2rem; font-weight: bold; border: none; cursor: pointer; box-shadow: 0 0 20px rgba(108, 92, 231, 0.4); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .section-title { text-align: center; font-size: 2.5rem; margin: 4rem 0 2rem; color: var(--accent); }
+        .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; padding-bottom: 4rem; }
+        .card { background: var(--card); border-radius: 15px; padding: 2rem; border: 1px solid #333; transition: 0.3s; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary); }
+        .input-group { width: 100%; padding: 12px; margin-bottom: 1rem; background: #0f0f23; border: 1px solid #333; color: white; border-radius: 8px; }
+        .select-group { width: 100%; padding: 12px; background: #0f0f23; border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 1rem; }
+        .btn-gen { width: 100%; padding: 12px; background: linear-gradient(45deg, var(--primary), var(--accent)); border: none; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: auto; }
+        .result-box { margin-top: 15px; text-align: center; border-top: 1px solid #333; padding-top: 15px; }
+        .result-box img, .result-box video, .result-box audio { max-width: 100%; border-radius: 8px; margin-bottom: 10px; background: #000; }
+        .btn-download-real { display: inline-block; background: var(--success); color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-top: 5px; }
+        footer { background: #0a0a15; padding: 2rem; text-align: center; color: #666; border-top: 1px solid #222; }
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-content { background: var(--card); padding: 2.5rem; border-radius: 15px; width: 400px; position: relative; border: 1px solid var(--primary); }
+        .modal-close { position: absolute; top: 10px; right: 15px; font-size: 2rem; cursor: pointer; color: #888; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">LUIS IA</div>
+        <nav><ul><li><a href="#tools">Herramientas</a></li><li><a href="#pricing">Precios</a></li></ul></nav>
+        <button class="btn-login" onclick="openModal()">Acceso VIP</button>
+    </header>
+    <section class="hero">
+        <h1>LUIS <span>IA</span></h1>
+        <p>Genera Videos de 5 a 30 Minutos, Música y Pistas Musicales Completas. Descarga directa a tu PC.</p>
+        <button class="btn-cta" onclick="document.getElementById('tools').scrollIntoView()">Empezar Gratis</button>
+    </section>
+    <div id="tools" class="container">
+        <h2 class="section-title">Suite de Creación IA</h2>
+        <div class="tools-grid">
+            <div class="card">
+                <div class="card-header"><span class="card-icon">🎬</span><span class="card-title">Texto a Video</span></div>
+                <textarea class="input-group" placeholder="Ej: Un dron volando..."></textarea>
+                <select class="select-group" id="dur_vid1">
+                    <option value="5">5 Minutos (Gratis)</option>
+                    <option value="10">10 Minutos (Gratis)</option>
+                    <option value="30">30 Minutos (PRO)</option>
+                </select>
+                <button class="btn-gen" onclick="generateContent('video', 'dur_vid1', this)">Generar Video</button>
+                <div class="result-box" id="res_video"></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-icon">🎵</span><span class="card-title">Música IA</span></div>
+                <input type="text" class="input-group" placeholder="Estilo musical">
+                <select class="select-group" id="dur_music">
+                    <option value="1">Pista Corta</option>
+                    <option value="3">Canción Completa</option>
+                </select>
+                <button class="btn-gen" onclick="generateContent('music', 'dur_music', this)">Crear Música</button>
+                <div class="result-box" id="res_music"></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-icon">✨</span><span class="card-title">Logos 3D</span></div>
+                <input type="text" class="input-group" placeholder="Nombre de tu marca">
+                <button class="btn-gen" onclick="generateContent('logo', 0, this)">Crear Logo</button>
+                <div class="result-box" id="res_logo"></div>
+            </div>
+        </div>
+    </div>
+    <footer><p>&copy; 2024 LUIS IA. Todos los derechos reservados.</p></footer>
+    <div class="modal-bg" id="loginModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <h3>Acceso Creador</h3>
+            <input type="password" id="adminKey" class="input-group" placeholder="Clave Secreta">
+            <button class="btn-gen" onclick="validateAdmin()">Entrar</button>
+        </div>
+    </div>
+    <script>
+        let isAdmin = false; const secretKey = "luisia2023";
+        function openModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('loginModal').style.display = 'none'; }
+        function validateAdmin() { if(document.getElementById('adminKey').value === secretKey) { isAdmin = true; alert("¡Modo Creador Activado!"); closeModal(); } else { alert("Clave incorrecta."); } }
+        async function generateContent(type, durationId, btn) {
+            let duration = durationId !== 0 ? parseInt(document.getElementById(durationId).value) : 1;
+            if(!isAdmin && type === 'video' && duration >= 30) { alert("Necesitas el Plan PRO."); return; }
+            const resultDiv = document.getElementById('res_' + type);
+            resultDiv.innerHTML = '<p style="color:var(--accent);">🔄 Procesando...</p>';
+            btn.disabled = true; btn.innerText = "Procesando...";
+            const card = btn.closest('.card'); const inputs = card.querySelectorAll('.input-group'); const prompt = inputs[0] ? inputs[0].value : "Diseño IA";
+            try {
+                const response = await fetch('/generar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tipo: type, prompt: prompt }) });
+                if (response.ok) { const data = await response.json(); showResult(type, data.resultado, data.tipo || type, duration); } else { throw new Error("Error"); }
+            } catch (error) { simulateDownload(type, resultDiv, duration); } finally { btn.disabled = false; btn.innerText = "Generar"; }
+        }
+        function showResult(type, src, fileType, duration = 1) {
+            const resultDiv = document.getElementById('res_' + type); let html = '';
+            const ext = fileType === 'imagen' ? 'png' : (fileType === 'audio' ? 'mp3' : 'mp4');
+            const fileName = `LUIS_IA_${type}_${duration}min.${ext}`;
+            if(fileType === 'imagen') html = `<img src="${src}" style="max-width:100%"><br>`;
+            else if (fileType === 'video') html = `<video controls src="${src}" style="max-width:100%"></video><br>`;
+            else if (fileType === 'audio') html = `<audio controls src="${src}" style="width:100%"></audio><br>`;
+            html += `<a href="${src}" download="${fileName}" class="btn-download-real">⬇️ Descargar (${duration} Min)</a>`;
+            resultDiv.innerHTML = html;
+        }
+        function simulateDownload(type, resultDiv, duration = 1) {
+            let fakeSrc = ""; let tag = "";
+            if(type === 'video') { fakeSrc = "https://www.w3schools.com/html/mov_bbb.mp4"; tag = `<video controls src="${fakeSrc}"></video><br><p style="font-size:12px;color:#888;">(Muestra de prueba)</p>`; }
+            else if (type === 'music') { fakeSrc = "https://www.w3schools.com/html/horse.mp3"; tag = `<audio controls src="${fakeSrc}"></audio><br>`; }
+            else { fakeSrc = "https://www.w3schools.com/html/pic_trulli.jpg"; tag = `<img src="${fakeSrc}"><br>`; }
+            const ext = type === 'music' ? 'mp3' : (type === 'video' ? 'mp4' : 'jpg');
+            const fileName = `LUIS_IA_Prueba_${type}_${duration}min.${ext}`;
+            resultDiv.innerHTML = tag + `<a href="${fakeSrc}" download="${fileName}" class="btn-download-real">⬇️ Descargar Archivo (${duration} Min)</a>`;
+        }
+    </script>
+</body>
+</html>
