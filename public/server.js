@@ -32,7 +32,18 @@ app.post('/generar', async (req, res) => {
         
         // Simulación de Video y Música (Requiere APIs de pago extras para ser real)
         if (tipo === 'video') {
-            return res.json({ resultado: "https://www.w3schools.com/html/mov_bbb.mp4", tipo: 'video' });
+                    // SIMULACIÓN DE VIDEO MEJORADA (Videos al azar)
+        if (tipo === 'video') {
+            const videosMuestra = [
+                "https://www.w3schools.com/html/mov_bbb.mp4",
+                "https://www.w3schools.com/html/movie.mp4",
+                "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            ];
+            // Elige un video al azar de la lista
+            const videoRandom = videosMuestra[Math.floor(Math.random() * videosMuestra.length)];
+            return res.json({ resultado: videoRandom, tipo: 'video' });
+        }
+            
         }
         if (tipo === 'music') {
             return res.json({ resultado: "https://www.w3schools.com/html/horse.mp3", tipo: 'audio' });
