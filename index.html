@@ -1,0 +1,56 @@
+        async function generateContent(type, durationId, btn) {
+            let duration = durationId !== 0 ? parseInt(document.getElementById(durationId).value) : 1;
+
+            if(!isAdmin && duration === 30) {
+                alert("⚠️ El video de 30 Minutos es exclusivo del PLAN PRO.\n\nDebes comprar la licencia o usar la clave de creador.");
+                openModal();
+                return;
+            }
+
+            const resultDiv = document.getElementById('res_' + type);
+            resultDiv.innerHTML = '<p style="color:var(--accent);">🔄 Procesando...</p>';
+            btn.disabled = true; btn.innerText = "Procesando...";
+            
+            const card = btn.closest('.card');
+            const inputs = card.querySelectorAll('.input-group');
+            const prompt = inputs[0] ? inputs[0].value : "Diseño IA";
+
+            try {
+                const response = await fetch('/generar', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ tipo: type, prompt: prompt, duration: duration }) 
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    showResult(type, data.resultado, data.tipo || type, duration);
+                } else { throw new Error("Error"); }
+            } catch (error) {
+                simulateDownload(type, resultDiv, duration);
+            } finally { 
+                btn.disabled = false; 
+                btn.innerText = "Generar"; 
+            }
+        }
+
+        function showResult(type, src, fileType, duration = 1) {
+            const resultDiv = document.getElementById('res_' + type); let html = '';
+            const fileName = `LUIS_IA_${type}_${duration}min.${fileType === 'imagen' ? 'png' : (fileType === 'audio' ? 'mp3' : 'mp4')}`;
+            
+            if(fileType === 'imagen') html = `<img src="${src}" style="max-width:100%"><br>`;
+            else if (fileType === 'video') html = `<video controls src="${src}" style="max-width:100%"></video><br>`;
+            else if (fileType === 'audio') html = `<audio controls src="${src}" style="width:100%"></audio><br>`;
+            
+            html += `<a href="${src}" download="${fileName}" class="btn-download-real">⬇️ Descargar (${duration} Min)</a>`;
+            resultDiv.innerHTML = html;
+        }
+
+        function simulateDownload(type, resultDiv, duration = 1) {
+            let fakeSrc = type === 'music' ? "https://www.w3schools.com/html/horse.mp3" : "https://www.w3schools.com/html/mov_bbb.mp4";
+            let tag = type === 'music' ? `<audio controls src="${fakeSrc}"></audio><br>` : `<video controls src="${fakeSrc}"></video><br>`;
+            resultDiv.innerHTML = tag + `<a href="${fakeSrc}" class="btn-download-real">⬇️ Descargar Prueba</a>`;
+        }
+    </script>
+</body>
+</html>
